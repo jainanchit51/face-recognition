@@ -1,66 +1,40 @@
 import cv2
-#import os module for reading training data directories and paths
 import os
-#import numpy to convert python lists to numpy arrays as 
-#it is needed by OpenCV face recognizers
 import numpy as np
-
-
+# list of labels 
 subjects = ["", "Kratik", "Anchit"]
 
-
-
-#function to detect face using OpenCV
 def detect_face(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-     
-    face_cascade = cv2.CascadeClassifier('opencv-files/lbpcascade_frontalface.xml')
-
-   
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
+    face_cascade = cv2.CascadeClassifier('opencv-files/lbpcascade_frontalface.xml')   
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
     
-   
     if (len(faces) == 0):
         return None, None
     
     # assumption --> only one face,
     #extract the face area
     (x, y, w, h) = faces[0]
-    
     # face part of the image
     return gray[y:y+w, x:x+h], faces[0]
 
 
 def prepare_training_data(data_folder_path):
-    
-
-    dirs = os.listdir(data_folder_path)
-    
-    
+    dirs = os.listdir(data_folder_path)    
     faces = []
-    labels = []
-    
+    labels = []  
     
     for dir_name in dirs:
-        
         if not dir_name.startswith("s"):
             continue;
             
         label = int(dir_name.replace("s", ""))
-        
-        subject_dir_path = data_folder_path + "/" + dir_name
-    
-    
+        subject_dir_path = data_folder_path + "/" + dir_name  
         subject_images_names = os.listdir(subject_dir_path)
         
     
         #detect face and add face to list of faces
-        for image_name in subject_images_names:
-            
-            #ignore system files like .DS_Store
-#            if image_name.startswith("."):
-#                continue;
-            
+        for image_name in subject_images_names:           
 
             image_path = subject_dir_path + "/" + image_name
             image = cv2.imread(image_path)
@@ -70,8 +44,7 @@ def prepare_training_data(data_folder_path):
             cv2.waitKey(100)
             
             #detect face
-            face, rect = detect_face(image)
-            
+            face, rect = detect_face(image)           
           
             # ignore all faces that are not detected
             if face is not None:
@@ -85,17 +58,10 @@ def prepare_training_data(data_folder_path):
     return faces, labels
 
 
-print("Preparing data...")
+print("Lets gather some data")
 faces, labels = prepare_training_data("training-data")
-print("Data prepared")
-
-
-print("Total faces: ", len(faces))
-print("Total labels: ", len(labels))
-
-
-
-
+print("Total data to train: ", len(faces))
+# Using Local Binary Patterns Histograms recognizer  
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 #face_recognizer = cv2.face.EigenFaceRecognizer_create()
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
