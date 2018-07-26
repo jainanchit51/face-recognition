@@ -61,11 +61,11 @@ def prepare_training_data(data_folder_path):
 print("Lets gather some data")
 faces, labels = prepare_training_data("training-data")
 print("Total data to train: ", len(faces))
-# Using Local Binary Patterns Histograms recognizer  
+# we will use Local Binary Patterns Histograms recognizer to classify the test image
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+# or you can play with some other available recognizers as well
 #face_recognizer = cv2.face.EigenFaceRecognizer_create()
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
-
 
 #training statrs here..........
 face_recognizer.train(faces, np.array(labels))
@@ -77,18 +77,14 @@ def draw_rectangle(img, rect):
     cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
     
 def draw_text(img, text, x, y,confidence):
-    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), int(1.5))
-    
+    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), int(1.5))    
     cv2.putText(img, str(confidence), (x+w,y+h+100), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
 
 
 def predict(test_img):
 
-    #img = test_img.copy()
-   
+    #img = test_img.copy()   
     face, rect = detect_face(test_img)
-
-
     label, confidence = face_recognizer.predict(face)
     ## calculating accuracy 
     if (confidence < 100):
@@ -116,7 +112,7 @@ test_img2 = cv2.imread("test-data/test5.jpg")
 #perform a prediction
 predicted_img1 = predict(test_img1)
 predicted_img2 = predict(test_img2)
-print("prediction complete")
+
 
 #display both images
 cv2.imshow(subjects[1], cv2.resize(predicted_img1, (400, 500)))
