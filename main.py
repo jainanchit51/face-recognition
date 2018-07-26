@@ -67,7 +67,7 @@ face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 #face_recognizer = cv2.face.EigenFaceRecognizer_create()
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
 
-#training statrs here..........
+#training starts here..........
 face_recognizer.train(faces, np.array(labels))
 
 w=0
@@ -83,7 +83,7 @@ def draw_text(img, text, x, y,confidence):
 
 def predict(test_img):
 
-    #img = test_img.copy()   
+    
     face, rect = detect_face(test_img)
     label, confidence = face_recognizer.predict(face)
     ## calculating accuracy 
@@ -96,7 +96,6 @@ def predict(test_img):
         confidence = "  {0}%".format(abs(round(100 - confidence)))
         
 #get name of respective label returned by face recognizer
-#    label = subjects[label]
     
     draw_text(test_img, label, rect[0], rect[1]-5,confidence)
     draw_rectangle(test_img, rect)    
@@ -112,8 +111,6 @@ test_img2 = cv2.imread("test-data/test5.jpg")
 #perform a prediction
 predicted_img1 = predict(test_img1)
 predicted_img2 = predict(test_img2)
-
-
 #display both images
 cv2.imshow(subjects[1], cv2.resize(predicted_img1, (400, 500)))
 cv2.imshow(subjects[2], cv2.resize(predicted_img2, (400, 500)))
